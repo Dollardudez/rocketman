@@ -16,26 +16,26 @@ class TextOnScreen():
         self.duration = duration
         self.text_size = 40
         self.font = pygame.font.SysFont(None, self.text_size)
-        self.text_image = self.font.render(text, True, self.text_color)
+        self.text_image = self.font.render(self.text, True, self.text_color)
         self.rect = self.text_image.get_rect()
 
         #start each ship at the bottom of the screen
         self.rect.centerx = self.screen_rect.centerx
         self.rect.centery = self.screen_rect.centery - 200
         
-        # Store decimal values for ship's center
+        # Store decimal values for ship's center.
         self.center = [float(self.rect.centerx), float(self.rect.centery)]
         #Movement flag
 
     
-    ##update ship's position based on the movement flag
-    #update the ship's center value, not the rect
-    def update(self):
+    def update(self, passes):
+        if(self.duration < passes):
+            return True
         self.text_size += 1
-
-    def delete_text(self):
-        eraseText = self.font.render("", False, 0, (70, 12, 178))
-        self.screen.blit(eraseText, self.rect)
+        self.rect.centery -= 1
+        self.font = pygame.font.SysFont(None, self.text_size)
+        self.text_image = self.font.render(self.text, True, self.text_color)
+        return False
     
 
     def blitme(self):

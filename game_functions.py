@@ -11,6 +11,7 @@ from moving_alien import MovingAlien
 from time import sleep
 import power_ups
 import random
+from text_on_screen import TextOnScreen
 
 def get_number_rows(ai_settings, ship_height, alien_height):
     """Find the number of rows that fit on a screen"""
@@ -64,7 +65,6 @@ def check_events(ai_settings, screen, stats, scoreboard, play_button, ship, alie
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                print(mouse_x)
                 check_play_button(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets, mouse_x, mouse_y)
 
 def check_play_button(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets, mouse_x, mouse_y):
@@ -85,10 +85,12 @@ def check_play_button(ai_settings, screen, stats, scoreboard, play_button, ship,
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
-def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, text):
+def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, textArray):
     #redraw the screen with each pass through the loop
     screen.fill(ai_settings.bg_color)
-    text.blitme()
+    if(len(textArray) != 0):
+        for text in textArray:
+            text.blitme()
     ship.blitme()
     if(stats.game_active == True):
         moving_aliens.draw(screen)
@@ -305,16 +307,13 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
         ship.moving_right = True
     elif event.key == pygame.K_a:
         #move ship to the left
-        print("LEFT")
         ship.moving_left = True
     elif event.key == pygame.K_w:
         #move ship to the up
-        print("UP")
         ship.moving_up = True
         
     elif event.key == pygame.K_s:
         #move ship to the down
-        print("DOWN")
         ship.moving_down = True
     elif event.key == pygame.K_SPACE:
         #create new bullet and add it to the bullets group
@@ -365,21 +364,31 @@ def create_speed_ups(ai_settings, screen, x, y, pow_ups, stats):
     bolt = power_ups.SpeedPowerup(screen, x, y, stats)
     pow_ups.add(bolt)
 
-def update_pow_ups(pow_ups, ship, ai_settings):
+def update_pow_ups(pow_ups, ship, ai_settings, screen, textArray):
     pow_ups.update()
     collided_pow_up = pygame.sprite.spritecollideany(ship, pow_ups)
     if collided_pow_up:
         pow_ups.empty()
-        if ai_settings.ship_speed_factor == 114:
-                return
+        if ai_settings.ship_speed_factor == 20:
+            return
         if type(collided_pow_up) is power_ups.SpeedPowerup:
             effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/speed_power-up.wav')
             effect.play(0)
+            text = TextOnScreen("Speed Multiplier .33X", screen, 15)
+            textArray.append(text)
             ai_settings.ship_speed_factor += .33
             return
         if type(collided_pow_up) is power_ups.GunPowerup:
             ai_settings.guns += 1
+            text = TextOnScreen("Gun Multiplier +1", screen, 15)
+            textArray.append(text)
             return
-        
+
+def update_text(textArray, passes):
+    for text in textArray:
+        if(text.update(passes) == True):
+            textArray.remove(text)
+            print(text.text)
+    
 
 
