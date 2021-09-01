@@ -32,6 +32,8 @@ class Smoke(Sprite):
         
 
     def update_color(self):
+        if(self.radius >=0):
+            self.radius -= .5
         if(self.color.r > 70):
             self.color.r -= 10
         if(self.color.g > 8):

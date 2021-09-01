@@ -10,37 +10,35 @@ class TextOnScreen():
         #initialize the ship and set its starting position
         self.screen = screen
         #load ship image
-        self.image = pygame.image.load('D:/Python_Projects/PythonGame1/Images/rocket.bmp')
-        self.rect = self.image.get_rect()
+        self.text = text
         self.screen_rect = screen.get_rect()
-        self.font = pygame.font.SysFont(None, 48)
+        self.text_color = (30, 30, 30)
+        self.duration = duration
+        self.text_size = 40
+        self.font = pygame.font.SysFont(None, self.text_size)
+        self.text_image = self.font.render(text, True, self.text_color)
+        self.rect = self.text_image.get_rect()
 
         #start each ship at the bottom of the screen
         self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = self.screen_rect.bottom
+        self.rect.centery = self.screen_rect.centery - 200
         
         # Store decimal values for ship's center
-        self.center = float(self.rect.centerx)
+        self.center = [float(self.rect.centerx), float(self.rect.centery)]
         #Movement flag
-        self.moving_right = False
-        self.moving_left = False
+
     
     ##update ship's position based on the movement flag
     #update the ship's center value, not the rect
     def update(self):
-        if self.moving_right and self.rect.right < self.screen_rect.right:
-            self.center += self.ai_settings.ship_speed_factor
-        if self.moving_left and self.rect.left > 0:
-            self.center -= self.ai_settings.ship_speed_factor
+        self.text_size += 1
 
-        #update rect object from self.center
-        self.rect.centerx = self.center
+    def delete_text(self):
+        eraseText = self.font.render("", False, 0, (70, 12, 178))
+        self.screen.blit(eraseText, self.rect)
     
 
     def blitme(self):
         #Draw ship at its current location
-        self.screen.blit(self.text, self.rect)
+        self.screen.blit(self.text_image, self.rect)
 
-    def center_ship(self):
-        """Put the ship onto the center of the screen"""
-        self.center = self.screen_rect.centerx

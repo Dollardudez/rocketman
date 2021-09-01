@@ -1,4 +1,5 @@
 import sys
+from typing import Text
 import pygame
 import bullet as Bullet
 from alien_bullet import AlienBullet
@@ -12,6 +13,7 @@ from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
 import power_ups
+from text_on_screen import TextOnScreen
 
 def run_game():
     #initialize python, settings, and screen object
@@ -55,12 +57,13 @@ def run_game():
 
     gf.create_shooting_fleet(ai_settings, screen, shooting_aliens)
     
-    #pygame.mixer.init()
+    pygame.mixer.init()
     #pygame.mixer.music.load("D:/Python_Projects/PythonGame1/Sounds/2019-12-09_-_Retro_Forest_-_David_Fesliyan.wav")
     #pygame.mixer.music.play(-1, 0.0)
     effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/WHO_IS_THIS.wav')
     effect.play(0)
 
+    text = TextOnScreen("Heloo", screen, 10)
     passes = 0
 
     bonus = 0
@@ -78,7 +81,7 @@ def run_game():
             bonus = gf.update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, bonus)
             gf.update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
             gf.update_shooting_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, alien_bullets)
-        gf.update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups)
+        gf.update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, text)
         #cap the fps
         clock.tick(50)
         if passes > 4:

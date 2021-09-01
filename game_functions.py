@@ -85,10 +85,10 @@ def check_play_button(ai_settings, screen, stats, scoreboard, play_button, ship,
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
-def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups):
+def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, text):
     #redraw the screen with each pass through the loop
     screen.fill(ai_settings.bg_color)
-
+    text.blitme()
     ship.blitme()
     if(stats.game_active == True):
         moving_aliens.draw(screen)
@@ -373,6 +373,8 @@ def update_pow_ups(pow_ups, ship, ai_settings):
         if ai_settings.ship_speed_factor == 114:
                 return
         if type(collided_pow_up) is power_ups.SpeedPowerup:
+            effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/speed_power-up.wav')
+            effect.play(0)
             ai_settings.ship_speed_factor += .33
             return
         if type(collided_pow_up) is power_ups.GunPowerup:
