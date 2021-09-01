@@ -16,7 +16,7 @@ class GunPowerup(Sprite):
         self.screen_rect = screen.get_rect()
 
     def update(self):
-        """Move the alien right"""
+        """Drop the powerup"""
         if(self.rect.y > self.screen_rect.y + 100):
             self.y += .5
             self.rect.y = self.y
@@ -40,7 +40,7 @@ class SpeedPowerup(Sprite):
         self.stats = stats
 
     def update(self):
-        """Move the alien right"""
+        """Move theh powerup down"""
         if(self.rect.y > self.screen_rect.y + 100):
             self.y += .5
             self.rect.y = self.y

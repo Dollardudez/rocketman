@@ -40,6 +40,8 @@ def run_game():
 
     pow_ups = Group()
 
+    clock = pygame.time.Clock()
+
     moving_aliens = Group()
 
     shooting_aliens = Group()
@@ -59,20 +61,28 @@ def run_game():
     effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/WHO_IS_THIS.wav')
     effect.play(0)
 
+    passes = 0
+
     bonus = 0
 
     #start the loop for the game
     while True:
         gf.check_events(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets)
-
+        passes += 1
         if stats.game_active == True:
+            gf.update_smoke(ship, passes)
             ship.update()
+            ship.update_smoke_color(passes)
             gf.update_bullets(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, bullets, alien_bullets, shooting_aliens, pow_ups)
             gf.update_pow_ups(pow_ups, ship, ai_settings)
             bonus = gf.update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, bonus)
             gf.update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
             gf.update_shooting_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, alien_bullets)
         gf.update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups)
+        #cap the fps
+        clock.tick(50)
+        if passes > 4:
+            passes = 0
         
         
 run_game()

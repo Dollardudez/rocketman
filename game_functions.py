@@ -46,6 +46,9 @@ def create_fleet(ai_settings, screen, ship, aliens):
             #create an alien and place it in the row
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
+def update_smoke(ship, passes):
+    ship.generate_smoke(passes)
+
 def check_events(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets):
     #respond to key presses and mouse clicks
     for event in pygame.event.get():
@@ -172,17 +175,8 @@ def ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens
     alien_bullets.empty()
 
     if stats.ships_left > 0:
-        if stats.ships_left == 3:
-            effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/horse_meat_roy.wav')
-            effect.play(0)
-        if stats.ships_left == 2:
-            effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/jeb_death_N.wav')
-            effect.play(0)
-        if stats.ships_left == 1:
-            effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/horse_meat_roy.wav')
-            effect.play(0)
         stats.ships_left -= 1
-        sleep(2)
+        sleep(3)
         effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/get_back_to_it_jeb.wav')
         effect.play(0)
 
@@ -297,10 +291,11 @@ def update_shooting_aliens(ai_settings, stats, scoreboard, screen, ship, aliens,
 
 def fire_bullet(ai_settings, screen, ship, bullets):
     """fire a bullet if the limit of bullets allowed on screen is not reached"""
-    effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/science_fiction_laser_006.wav')
-    effect.play(0)
-    new_bullet = Bullet(ai_settings, screen, ship)
-    bullets.add(new_bullet)  
+    if(len(bullets) < 11):
+        effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/science_fiction_laser_006.wav')
+        effect.play(0)
+        new_bullet = Bullet(ai_settings, screen, ship)
+        bullets.add(new_bullet)  
 
 
 def check_keydown_events(event, ai_settings, screen, ship, bullets):
@@ -310,7 +305,17 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
         ship.moving_right = True
     elif event.key == pygame.K_a:
         #move ship to the left
+        print("LEFT")
         ship.moving_left = True
+    elif event.key == pygame.K_w:
+        #move ship to the up
+        print("UP")
+        ship.moving_up = True
+        
+    elif event.key == pygame.K_s:
+        #move ship to the down
+        print("DOWN")
+        ship.moving_down = True
     elif event.key == pygame.K_SPACE:
         #create new bullet and add it to the bullets group
         fire_bullet(ai_settings, screen, ship, bullets) 
@@ -323,6 +328,12 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_a:
         #move ship to the left
         ship.moving_left = False
+    elif event.key == pygame.K_w:
+        #move ship to the left
+        ship.moving_up = False
+    elif event.key == pygame.K_s:
+        #move ship to the left
+        ship.moving_down = False
 
 def check_fleet_edges(ai_settings, aliens):
         """Respond if an alien has reached an edge"""
@@ -359,12 +370,13 @@ def update_pow_ups(pow_ups, ship, ai_settings):
     collided_pow_up = pygame.sprite.spritecollideany(ship, pow_ups)
     if collided_pow_up:
         pow_ups.empty()
-        if ai_settings.ship_speed_factor == 4:
+        if ai_settings.ship_speed_factor == 114:
                 return
         if type(collided_pow_up) is power_ups.SpeedPowerup:
-            ai_settings.ship_speed_factor += .25
+            ai_settings.ship_speed_factor += .33
             return
         if type(collided_pow_up) is power_ups.GunPowerup:
+            ai_settings.guns += 1
             return
         
 
