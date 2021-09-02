@@ -95,8 +95,8 @@ def run_game():
             gf.update_text(textArray, textPasses)
             gf.update_bullets(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, bullets, alien_bullets, shooting_aliens, pow_ups)
             gf.update_pow_ups(pow_ups, ship, ai_settings,screen, textArray)
-            bonus = gf.update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, bonus)
-            gf.update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
+            bonus = gf.update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, bonus, pow_ups)
+            gf.update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ups)
             gf.update_shooting_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, alien_bullets)
         gf.update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, textArray, gunshotsList)
         #cap the fps

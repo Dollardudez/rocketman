@@ -42,7 +42,7 @@ class Settings():
             return 2
         elif(self.guns == 3):
             return 3
-        else(self.guns == 4):
+        else:
             return 4
         
         

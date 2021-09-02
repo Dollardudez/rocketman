@@ -164,7 +164,7 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, scoreboard, ship, 
         scoreboard.prep_score()
 
     if pygame.sprite.spritecollideany(ship, alien_bullets):
-        ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
+        ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ups)
 
     if len(aliens) == 0:
         #destroy all bullets and create a new fleet
@@ -174,7 +174,7 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, scoreboard, ship, 
         create_fleet(ai_settings, screen, ship, aliens)
         create_shooting_fleet(ai_settings, screen, shooting_aliens)
 
-def ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets):
+def ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ups):
     """Respond to the user's ship getting hit by an alien ship"""
     #Destroy all aliens and bullets
     aliens.empty()
@@ -182,6 +182,7 @@ def ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens
     moving_aliens.empty()
     shooting_aliens.empty()
     alien_bullets.empty()
+    pow_ups.empty()
 
     if stats.ships_left > 0:
         stats.ships_left -= 1
@@ -209,12 +210,12 @@ def ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens
         stats.game_active = False
         pygame.mouse.set_visible(True)
         
-def update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, bonus):
+def update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, bonus, pow_ups):
     """Update the position of all aliens in the fleet"""
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
     #Check if any alien hits the bottom of the screen
-    check_aliens_bottom(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
+    check_aliens_bottom(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ups)
     if stats.score >= 1000 and bonus == 0:
         bonus += 1
         effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/shit_yeah_boys.wav')
@@ -223,7 +224,7 @@ def update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_a
         
     #scan for an alien colliding with the player's ship
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
+        ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ps)
 
 def create_moving_alien(ai_settings, screen, moving_aliens, x):
     """create an alien and place it in the row"""
@@ -242,7 +243,7 @@ def create_moving_fleet(ai_settings, screen, moving_aliens):
         create_moving_alien(ai_settings, screen, moving_aliens, x)
         x += 200
 
-def update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets):
+def update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ps):
     """Update the position of all aliens in the fleet"""
     for moving_alien in moving_aliens:
         moving_alien.update()
@@ -257,7 +258,7 @@ def update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, m
             break
 
     if pygame.sprite.spritecollideany(ship, moving_aliens):
-        ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
+        ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ps)
 
 
 def create_shooting_alien(ai_settings, screen, shooting_aliens, x, y):
@@ -312,23 +313,30 @@ def fire_player_bullet(ai_settings, screen, ship, bullets, guns):
         effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/science_fiction_laser_006.wav')
         effect.play(0)
         if(guns == 1):
-            new_bullet = Bullet(ai_settings, screen, ship, "center")
+            new_bullet = Bullet(ai_settings, screen, ship, 0, "center")
             bullets.add(new_bullet)
         if(guns == 2):
-            new_bullet = Bullet(ai_settings, screen, ship, 45, "left")
-            new_bullet2 = Bullet(ai_settings, screen, ship, -45, "right")
+            new_bullet = Bullet(ai_settings, screen, ship, 15, "left")
+            new_bullet2 = Bullet(ai_settings, screen, ship, -15, "right")
             bullets.add(new_bullet)
             bullets.add(new_bullet2)
         if(guns == 3):
-            new_bullet = Bullet(ai_settings, screen, ship, 45, "left")
-            new_bullet2 = Bullet(ai_settings, screen, ship, -45, "right")
-            new_bullet3 = Bullet(ai_settings, screen, ship, -45, "center")
+            new_bullet = Bullet(ai_settings, screen, ship, 20, "slightleft")
+            new_bullet2 = Bullet(ai_settings, screen, ship, -20, "slightright")
+            new_bullet3 = Bullet(ai_settings, screen, ship, 0, "center")
             bullets.add(new_bullet)
             bullets.add(new_bullet2)
             bullets.add(new_bullet3)
         if(guns == 4):
-            new_bullet = Bullet(ai_settings, screen, ship, 0)
+            new_bullet = Bullet(ai_settings, screen, ship, 45, "leftest")
+            new_bullet2 = Bullet(ai_settings, screen, ship, -45, "rightest")
+            new_bullet3 = Bullet(ai_settings, screen, ship, 15, "centerleft")
+            new_bullet4 = Bullet(ai_settings, screen, ship, -15, "centerright")
             bullets.add(new_bullet)
+            bullets.add(new_bullet2)
+            bullets.add(new_bullet3)
+            bullets.add(new_bullet4)
+            
         
         
 
@@ -383,13 +391,13 @@ def change_fleet_direction(ai_settings, aliens):
         alien.rect.y += ai_settings.fleet_drop_speed
     ai_settings.fleet_direction *= -1
 
-def check_aliens_bottom(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets):
+def check_aliens_bottom(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ps):
     """check if any aliens have reached the bottom of the screen"""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
         #as if the ship got hit
-            ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
+            ship_hit(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, pow_ps)
             break
 
 def create_gun_ups(ai_settings, screen, x, y, pow_ups, stats):
@@ -410,7 +418,7 @@ def update_pow_ups(pow_ups, ship, ai_settings, screen, textArray):
         if type(collided_pow_up) is power_ups.SpeedPowerup:
             effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/speed_power-up.wav')
             effect.play(0)
-            text = TextOnScreen("Speed Multiplier .33X", screen, 40, (233, 233, 34))
+            text = TextOnScreen("Speed Multiplier .33X", screen, 50, (233, 233, 34))
             textArray.append(text)
             ai_settings.ship_speed_factor += .33
             return
@@ -418,7 +426,7 @@ def update_pow_ups(pow_ups, ship, ai_settings, screen, textArray):
             effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/reload.wav')
             effect.play(0)
             ai_settings.guns += 1
-            text = TextOnScreen("Gun Multiplier +1", screen, 40, (34, 233, 47))
+            text = TextOnScreen("Gun Multiplier +1", screen, 50, (34, 233, 47))
             textArray.append(text)
             return
 
