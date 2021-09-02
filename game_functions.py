@@ -305,6 +305,31 @@ def fire_bullet(ai_settings, screen, ship, bullets):
         effect.play(0)
         new_bullet = Bullet(ai_settings, screen, ship)
         bullets.add(new_bullet)
+    
+def fire_player_bullet(ai_settings, screen, ship, bullets, guns):
+    """fire a bullet if the limit of bullets allowed on screen is not reached"""
+    if(len(bullets) < 11):
+        effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/science_fiction_laser_006.wav')
+        effect.play(0)
+        if(guns == 1):
+            new_bullet = Bullet(ai_settings, screen, ship, "center")
+            bullets.add(new_bullet)
+        if(guns == 2):
+            new_bullet = Bullet(ai_settings, screen, ship, 45, "left")
+            new_bullet2 = Bullet(ai_settings, screen, ship, -45, "right")
+            bullets.add(new_bullet)
+            bullets.add(new_bullet2)
+        if(guns == 3):
+            new_bullet = Bullet(ai_settings, screen, ship, 45, "left")
+            new_bullet2 = Bullet(ai_settings, screen, ship, -45, "right")
+            new_bullet3 = Bullet(ai_settings, screen, ship, -45, "center")
+            bullets.add(new_bullet)
+            bullets.add(new_bullet2)
+            bullets.add(new_bullet3)
+        if(guns == 4):
+            new_bullet = Bullet(ai_settings, screen, ship, 0)
+            bullets.add(new_bullet)
+        
         
 
 
@@ -325,7 +350,8 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets, gunshotList)
         ship.moving_down = True
     elif event.key == pygame.K_SPACE:
         #create new bullet and add it to the bullets group
-        fire_bullet(ai_settings, screen, ship, bullets)
+        guns = ai_settings.get_guns()
+        fire_player_bullet(ai_settings, screen, ship, bullets, guns)
         new_gunshot = Gunshot(screen, 10, ship)
         gunshotList.append(new_gunshot)
 
@@ -378,7 +404,7 @@ def update_pow_ups(pow_ups, ship, ai_settings, screen, textArray):
     pow_ups.update()
     collided_pow_up = pygame.sprite.spritecollideany(ship, pow_ups)
     if collided_pow_up:
-        pow_ups.empty()
+        pow_ups.remove(collided_pow_up)
         if ai_settings.ship_speed_factor == 20:
             return
         if type(collided_pow_up) is power_ups.SpeedPowerup:

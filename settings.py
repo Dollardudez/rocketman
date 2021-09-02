@@ -35,4 +35,17 @@ class Settings():
         self.alien_points = 25
         self.moving_points = 50
 
+    def get_guns(self):
+        if(self.guns == 1):
+            return 1
+        elif(self.guns == 2):
+            return 2
+        elif(self.guns == 3):
+            return 3
+        else(self.guns == 4):
+            return 4
+        
+        
+        
+
     
