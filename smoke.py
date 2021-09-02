@@ -9,7 +9,7 @@ class Smoke(Sprite):
         """Create a smoke object from the ship's position"""
         super(Smoke, self).__init__()
         self.screen = screen
-
+        self.ship_speed = ai_settings.ship_speed_factor
         #Create a bullet react at (0, 0) then set correct position
         self.rect = pygame.Rect(0, 0, 10, 10)
         self.rect.centerx = ship.rect.centerx
@@ -32,14 +32,30 @@ class Smoke(Sprite):
         
 
     def update_color(self):
-        if(self.radius >=0):
-            self.radius -= .5
-        if(self.color.r > 70):
-            self.color.r -= 10
-        if(self.color.g > 8):
-            self.color.g -= 20
-        if(self.color.b > 178):
-            self.color.b -= 5
+        colorsTuple = self.__update_color_by_speed()
+        if(self.radius >= 0):
+            self.radius -= colorsTuple[0]
+        if(self.color.r > colorsTuple[4]):
+            self.color.r -= colorsTuple[1]
+        if(self.color.g > colorsTuple[5]):
+            self.color.g -= colorsTuple[2]
+        if(self.color.b > colorsTuple[6]):
+            self.color.b -= colorsTuple[3]
+
+    def __update_color_by_speed(self):
+        if(self.ship_speed > 11):
+            return (.4, 1, 30, 30, 10, 90, 100)
+        elif(self.ship_speed > 10):
+            return (.5, 1, 30, 30, 10, 90, 100)
+        elif(self.ship_speed > 9):
+           return (.55, 10, 0, 9, 20, 255, 26)
+        elif(self.ship_speed > 8):
+            return (.6, 0, 20, 0, 255, 30, 255)
+        elif(self.ship_speed > 7):
+            return (.8, 1, 30, 30, 10, 90, 100)
+        
+        else:
+            return (1, 10, 15, 7, 70, 8, 178)
 
     def draw_smoke(self):
         """Draw bullet on screen"""

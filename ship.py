@@ -7,10 +7,16 @@ class Ship(Sprite):
     def __init__(self, ai_settings, screen):
         #initialize the ship and set its starting position
         super(Ship, self).__init__()
+        string = "D:/Python_Projects/AlienInvaders/Images/SpaceShooterRedux/PNG/"
+
         self.screen = screen
         self.ai_settings = ai_settings
+        self.sprites = []
+        self.sprites.append(pygame.image.load(string + 'playerShip1_red.png'))
+        self.sprites.append(pygame.image.load(string + 'playerShip2_red.png'))
+        self.current_sprite = 0
+        self.image = self.sprites[self.current_sprite]
         #load ship image
-        self.image = pygame.image.load('D:/Python_Projects/PythonGame1/Images/rocket.bmp')
         #make a rect out of the image
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
@@ -33,6 +39,10 @@ class Ship(Sprite):
     ##update ship's position based on the movement flag
     #update the ship's center value, not the rect
     def update(self):
+        if(self.moving_down == True):
+            self.image = self.sprites[1]
+        else:
+            self.image = self.sprites[0]
         self.smoke_stack.update()
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.center[0] += self.ai_settings.ship_speed_factor

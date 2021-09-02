@@ -18,7 +18,7 @@ class GunPowerup(Sprite):
     def update(self):
         """Drop the powerup"""
         if(self.rect.y > self.screen_rect.y + 100):
-            self.y += .5
+            self.y += 1
             self.rect.y = self.y
 
     def blitme(self):
@@ -42,7 +42,7 @@ class SpeedPowerup(Sprite):
     def update(self):
         """Move theh powerup down"""
         if(self.rect.y > self.screen_rect.y + 100):
-            self.y += .5
+            self.y += 1
             self.rect.y = self.y
 
     def blitme(self):

@@ -418,9 +418,9 @@ def update_pow_ups(pow_ups, ship, ai_settings, screen, textArray):
         if type(collided_pow_up) is power_ups.SpeedPowerup:
             effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/speed_power-up.wav')
             effect.play(0)
-            text = TextOnScreen("Speed Multiplier .33X", screen, 50, (233, 233, 34))
+            text = TextOnScreen("Speed Upgrade +1", screen, 50, (233, 233, 34))
             textArray.append(text)
-            ai_settings.ship_speed_factor += .33
+            ai_settings.ship_speed_factor += 1
             return
         if type(collided_pow_up) is power_ups.GunPowerup:
             effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/reload.wav')

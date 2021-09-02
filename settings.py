@@ -21,6 +21,7 @@ class Settings():
         self.alien_bullet_color = 18, 178, 87
         self.bullets_allowed = 10
         self.guns = 1
+        self.speed = 1
 
         # Alien settings
         self.alien_speed_factor = 4
