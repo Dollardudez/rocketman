@@ -34,3 +34,5 @@ class Settings():
         #Scoring
         self.alien_points = 25
         self.moving_points = 50
+
+    

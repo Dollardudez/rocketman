@@ -50,6 +50,8 @@ def run_game():
 
     textArray = []
 
+    gunshotsList = []
+
     #Make a play button
     play_button = Button(ai_settings, screen, "Play!")
 
@@ -71,25 +73,32 @@ def run_game():
 
     textPasses = 0
 
+    gunPasses = 0
+
     #start the loop for the game
     while True:
-        gf.check_events(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets)
+        gf.check_events(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets, gunshotsList)
         if(len(textArray) == 0):
             textPasses = 0
         if(len(textArray) != 0):
             textPasses += 1
+        if(len(gunshotsList) == 0):
+            gunPasses = 0
+        if(len(gunshotsList) != 0):
+            gunPasses += 1
         passes += 1
         if stats.game_active == True:
             gf.update_smoke(ship, passes)
             ship.update()
             ship.update_smoke_color(passes)
+            gf.update_gunshots(gunshotsList, gunPasses)
             gf.update_text(textArray, textPasses)
             gf.update_bullets(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, bullets, alien_bullets, shooting_aliens, pow_ups)
             gf.update_pow_ups(pow_ups, ship, ai_settings,screen, textArray)
             bonus = gf.update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, bonus)
             gf.update_moving_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets)
             gf.update_shooting_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, moving_aliens, shooting_aliens, alien_bullets)
-        gf.update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, textArray)
+        gf.update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, textArray, gunshotsList)
         #cap the fps
         clock.tick(50)
         if passes > 4:

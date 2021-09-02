@@ -12,6 +12,7 @@ from time import sleep
 import power_ups
 import random
 from text_on_screen import TextOnScreen
+from gunshot import Gunshot
 
 def get_number_rows(ai_settings, ship_height, alien_height):
     """Find the number of rows that fit on a screen"""
@@ -50,14 +51,14 @@ def create_fleet(ai_settings, screen, ship, aliens):
 def update_smoke(ship, passes):
     ship.generate_smoke(passes)
 
-def check_events(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets):
+def check_events(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets, gunshotList):
     #respond to key presses and mouse clicks
     for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                # if key is pressed
-               check_keydown_events(event, ai_settings, screen, ship, bullets)
+               check_keydown_events(event, ai_settings, screen, ship, bullets, gunshotList)
             elif event.type == pygame.KEYUP:
                 #if key is released
                 check_keyup_events(event, ship)
@@ -85,13 +86,11 @@ def check_play_button(ai_settings, screen, stats, scoreboard, play_button, ship,
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
-def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, textArray):
+def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_aliens, shooting_aliens, bullets, alien_bullets, play_button, pow_ups, textArray, gunshotList):
     #redraw the screen with each pass through the loop
     screen.fill(ai_settings.bg_color)
-    if(len(textArray) != 0):
-        for text in textArray:
-            text.blitme()
-    ship.blitme()
+    
+    
     if(stats.game_active == True):
         moving_aliens.draw(screen)
         shooting_aliens.draw(screen)
@@ -104,6 +103,14 @@ def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, moving_a
             bullet.draw_bullet()
 
     pow_ups.draw(screen)
+    
+    ship.blitme()
+    if(len(gunshotList) != 0):
+        for shot in gunshotList:
+            shot.blitme()
+    if(len(textArray) != 0):
+        for text in textArray:
+            text.blitme()
     #Draw scoreboard info
     scoreboard.show_score()
 
@@ -297,10 +304,11 @@ def fire_bullet(ai_settings, screen, ship, bullets):
         effect = pygame.mixer.Sound('D:/Python_Projects/PythonGame1/Sounds/science_fiction_laser_006.wav')
         effect.play(0)
         new_bullet = Bullet(ai_settings, screen, ship)
-        bullets.add(new_bullet)  
+        bullets.add(new_bullet)
+        
 
 
-def check_keydown_events(event, ai_settings, screen, ship, bullets):
+def check_keydown_events(event, ai_settings, screen, ship, bullets, gunshotList):
     """Respond to key-presses"""
     if event.key == pygame.K_d:
         #move ship to the right
@@ -317,7 +325,9 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
         ship.moving_down = True
     elif event.key == pygame.K_SPACE:
         #create new bullet and add it to the bullets group
-        fire_bullet(ai_settings, screen, ship, bullets) 
+        fire_bullet(ai_settings, screen, ship, bullets)
+        new_gunshot = Gunshot(screen, 10, ship)
+        gunshotList.append(new_gunshot)
 
 """Respond to key-releases"""
 def check_keyup_events(event, ship):
@@ -374,13 +384,15 @@ def update_pow_ups(pow_ups, ship, ai_settings, screen, textArray):
         if type(collided_pow_up) is power_ups.SpeedPowerup:
             effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/speed_power-up.wav')
             effect.play(0)
-            text = TextOnScreen("Speed Multiplier .33X", screen, 15)
+            text = TextOnScreen("Speed Multiplier .33X", screen, 40, (233, 233, 34))
             textArray.append(text)
             ai_settings.ship_speed_factor += .33
             return
         if type(collided_pow_up) is power_ups.GunPowerup:
+            effect = pygame.mixer.Sound('D:/Python_Projects/AlienInvaders/Sounds/reload.wav')
+            effect.play(0)
             ai_settings.guns += 1
-            text = TextOnScreen("Gun Multiplier +1", screen, 15)
+            text = TextOnScreen("Gun Multiplier +1", screen, 40, (34, 233, 47))
             textArray.append(text)
             return
 
@@ -389,6 +401,11 @@ def update_text(textArray, passes):
         if(text.update(passes) == True):
             textArray.remove(text)
             print(text.text)
+
+def update_gunshots(gunshotList, passes):
+    for shot in gunshotList:
+        if(shot.update(passes) == True):
+            gunshotList.remove(shot)
     
 
 

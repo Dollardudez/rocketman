@@ -6,13 +6,13 @@ when a player gets to a certain amount of points
 """
 class TextOnScreen():
 
-    def __init__(self, text, screen, duration):
+    def __init__(self, text, screen, duration, color):
         #initialize the ship and set its starting position
         self.screen = screen
         #load ship image
         self.text = text
         self.screen_rect = screen.get_rect()
-        self.text_color = (30, 30, 30)
+        self.text_color = color
         self.duration = duration
         self.text_size = 40
         self.font = pygame.font.SysFont(None, self.text_size)
@@ -31,10 +31,10 @@ class TextOnScreen():
     def update(self, passes):
         if(self.duration < passes):
             return True
-        self.text_size += 1
-        self.rect.centery -= 1
-        self.font = pygame.font.SysFont(None, self.text_size)
-        self.text_image = self.font.render(self.text, True, self.text_color)
+        if(passes < 15):
+
+            self.text_size += 1
+        self.rect.centery -= 2
         return False
     
 
